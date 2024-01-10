@@ -15,9 +15,7 @@ func main() {
 
 	time.Sleep(2 * time.Second)
 
-	// mutate_board
-	//
-	board[0][0] = '*'
+	board = mutateBoard(board)
 	printBoard(board)
 }
 
@@ -48,4 +46,19 @@ func printBoard(board lifeBoard) {
     }
 
 	fmt.Printf("------\n")
+}
+
+
+func mutateBoard(board lifeBoard) lifeBoard {
+    for i := 0; i <= 2; i++ {
+		for j := 0; j <= 2; j++ {
+			switch board[i][j] {
+			case '.': board[i][j] = '@'
+			case '@': board[i][j] = '.'
+			default: log.Fatal("Invalid char in cell")
+			}
+		}
+    }
+
+	return board
 }
