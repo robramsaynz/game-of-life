@@ -1,5 +1,14 @@
 package main
 
+// NOTE 1
+//
+// For [x][y] coordinates [0][0] == bottom left, and
+// [2][2] == top-right.
+//
+// Generally this means that y works how you expect,
+// but y inverted for things like printing, for which
+// the highest line is printed first.
+
 import (
 	"fmt"
 	"time"
@@ -8,22 +17,24 @@ import (
 
 type lifeBoard [3][3]byte;
 
-// func cellIsLive(cell byte) {
 func main() {
 	board := setup_board()
 	printBoard(board)
+	time.Sleep(time.Second)
 
-	time.Sleep(2 * time.Second)
-
-	board = mutateBoard(board)
-	printBoard(board)
+	for i := 0 ; i < 10 ; i++ {
+		board = processBoard(board)
+		printBoard(board)
+		time.Sleep(time.Second)
+	}
 }
 
 func setup_board() lifeBoard {
+	// This is inverted vertically (see NOTE 1)
 	board := [3][3]byte {
-		[3]byte{'.', '.', '@'},
-		[3]byte{'.', '@', '.'},
 		[3]byte{'@', '.', '.'},
+		[3]byte{'.', '@', '.'},
+		[3]byte{'.', '.', '@'},
 	}
 
 	return board
@@ -38,9 +49,10 @@ func printBoard(board lifeBoard) {
 
 	fmt.Printf("\n------\n")
 
-    for i := 0; i <= 2; i++ {
-		for j := 0; j <= 2; j++ {
-			fmt.Printf(" %c", board[i][j])
+	// NOTE: x--, and y++ (see NOTE 1)
+    for x := 2; x >= 0; x-- {
+		for y := 0; y <= 2; y++ {
+			fmt.Printf(" %c", board[x][y])
 		}
 		fmt.Printf("\n")
     }
@@ -49,16 +61,83 @@ func printBoard(board lifeBoard) {
 }
 
 
-func mutateBoard(board lifeBoard) lifeBoard {
-    for i := 0; i <= 2; i++ {
-		for j := 0; j <= 2; j++ {
-			switch board[i][j] {
-			case '.': board[i][j] = '@'
-			case '@': board[i][j] = '.'
-			default: log.Fatal("Invalid char in cell")
-			}
+func processBoard(oldBoard lifeBoard) lifeBoard {
+	var newBoard lifeBoard
+
+	// NOTE: x--, and y++ (see NOTE 1)
+    for x := 2; x >= 0; x-- {
+		for y := 0; y <= 2; y++ {
+			newBoard[x][y] = processCell(oldBoard, x, y)
 		}
     }
 
-	return board
+	return newBoard
+}
+
+func processCell(board lifeBoard, x int, y int) byte {
+	totalLiveNeighbours :=
+		cellAliveInt(board, x, y+1) +   // top-cell
+		cellAliveInt(board, x, y-1) +   // bottom-cell
+		cellAliveInt(board, x-1, y) +   // left-cell
+		cellAliveInt(board, x+1, y) +   // right-cell
+		cellAliveInt(board, x-1, y+1) + // top-left-cell
+		cellAliveInt(board, x+1, y+1) + // top-right-cell
+		cellAliveInt(board, x+1, y-1) + // bottom-right-cell
+		cellAliveInt(board, x-1, y-1)   // bottom-left-cell
+
+	var cellLives bool
+
+	isThisCellAlive := isCellAlive(board, x, y)
+
+	switch isThisCellAlive {
+	case true:
+		switch {
+		// Any live cell with fewer than two live neighbours dies, as if by underpopulation
+		case totalLiveNeighbours < 2: cellLives = false
+		// Any live cell with more than three live neighbours dies, as if by overpopulation.
+		case totalLiveNeighbours > 3: cellLives = false
+		// Any live cell with two or three live neighbours lives on to the next generation.
+		default: cellLives = true
+		}
+	case false:
+		switch totalLiveNeighbours {
+		// Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+		case 3: cellLives = true
+		default: cellLives = false
+		}
+	}
+
+	switch cellLives {
+	case false: return '.'
+	case true:  return '@'
+    default: log.Fatal("invalid switch state") ; return '?'
+	}
+}
+
+// returns an 0 or 1 depending on whether this adds to the
+// count of alive neighbours
+func cellAliveInt(board lifeBoard, x int, y int) int {
+	switch {
+	case ! isCellOnBoard(x, y): return 0
+	case ! isCellAlive(board, x, y): return 0
+	default: return 1
+	}
+}
+
+func isCellOnBoard(x, y int) bool {
+	switch {
+	case x < 0: return false
+	case x > 2: return false
+	case y < 0: return false
+	case y > 2: return false
+	default: 	return true
+	}
+}
+
+func isCellAlive(board lifeBoard, x int, y int) bool{
+    switch board[x][y] {
+    case '@': return true
+    case '.': return false
+    default: log.Fatal("invalid switch arg: %c", board[x][y]) ; return false
+    }
 }
