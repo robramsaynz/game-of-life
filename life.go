@@ -1,11 +1,7 @@
-// This is a application written in order to learn Go-lang.
-//
-// It's probably of mixed quality and implements Conway's
-// Game of Life:
+// An implements Conway's Game of Life:
 //
 // - https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Rules
 // - https://pi.math.cornell.edu/~lipa/mec/lesson6.html
-//
 
 package main
 
