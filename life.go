@@ -1,3 +1,12 @@
+// This is a application written in order to learn Go-lang.
+//
+// It's probably of mixed quality and implements Conway's
+// Game of Life:
+//
+// - https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Rules
+// - https://pi.math.cornell.edu/~lipa/mec/lesson6.html
+//
+
 package main
 
 // NOTE 1
@@ -15,7 +24,10 @@ import (
 	"log"
 )
 
-type lifeBoard [3][3]byte;
+const boardSizeX = 8
+const boardSizeY = 8
+
+type lifeBoard [boardSizeX][boardSizeY]byte;
 
 func main() {
 	board := setup_board()
@@ -31,10 +43,15 @@ func main() {
 
 func setup_board() lifeBoard {
 	// This is inverted vertically (see NOTE 1)
-	board := [3][3]byte {
-		[3]byte{'@', '.', '.'},
-		[3]byte{'.', '@', '.'},
-		[3]byte{'.', '.', '@'},
+	board := [boardSizeX][boardSizeY]byte {
+		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		[boardSizeY]byte{' ', ' ', '@', '@', '@', ' ', ' '},
+		[boardSizeY]byte{' ', '@', '@', '@', ' ', ' ', ' '},
+		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' '},
 	}
 
 	return board
@@ -47,17 +64,18 @@ func clearScreen() {
 func printBoard(board lifeBoard) {
 	clearScreen()
 
-	fmt.Printf("\n------\n")
+	fmt.Printf("\n-------------------\n")
 
 	// NOTE: x--, and y++ (see NOTE 1)
-    for x := 2; x >= 0; x-- {
-		for y := 0; y <= 2; y++ {
+    for x := boardSizeX-1; x >= 0; x-- {
+		fmt.Printf("| ")
+		for y := 0; y <= boardSizeY-1; y++ {
 			fmt.Printf(" %c", board[x][y])
 		}
-		fmt.Printf("\n")
+		fmt.Printf(" |\n")
     }
 
-	fmt.Printf("------\n")
+	fmt.Printf("-------------------\n")
 }
 
 
@@ -65,8 +83,8 @@ func processBoard(oldBoard lifeBoard) lifeBoard {
 	var newBoard lifeBoard
 
 	// NOTE: x--, and y++ (see NOTE 1)
-    for x := 2; x >= 0; x-- {
-		for y := 0; y <= 2; y++ {
+    for x :=  boardSizeX-1; x >= 0; x-- {
+		for y := 0; y <= boardSizeY-2; y++ {
 			newBoard[x][y] = processCell(oldBoard, x, y)
 		}
     }
@@ -108,7 +126,7 @@ func processCell(board lifeBoard, x int, y int) byte {
 	}
 
 	switch cellLives {
-	case false: return '.'
+	case false: return ' '
 	case true:  return '@'
     default: log.Fatal("invalid switch state") ; return '?'
 	}
@@ -137,7 +155,7 @@ func isCellOnBoard(x, y int) bool {
 func isCellAlive(board lifeBoard, x int, y int) bool{
     switch board[x][y] {
     case '@': return true
-    case '.': return false
+    case ' ': return false
     default: log.Fatal("invalid switch arg: %c", board[x][y]) ; return false
     }
 }
