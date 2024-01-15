@@ -40,14 +40,14 @@ func main() {
 func setup_board() lifeBoard {
 	// This is inverted vertically (see NOTE 1)
 	board := [boardSizeX][boardSizeY]byte {
-		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' '},
-		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' '},
-		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' '},
-		[boardSizeY]byte{' ', ' ', '@', '@', '@', ' ', ' '},
-		[boardSizeY]byte{' ', '@', '@', '@', ' ', ' ', ' '},
-		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' '},
-		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' '},
-		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		[boardSizeY]byte{' ', ' ', '@', '@', '@', ' ', ' ', ' '},
+		[boardSizeY]byte{' ', '@', '@', '@', ' ', ' ', ' ', ' '},
+		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+		[boardSizeY]byte{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
 	}
 
 	return board
