@@ -80,7 +80,7 @@ func processBoard(oldBoard lifeBoard) lifeBoard {
 
 	// NOTE: x--, and y++ (see NOTE 1)
     for x :=  boardSizeX-1; x >= 0; x-- {
-		for y := 0; y <= boardSizeY-2; y++ {
+		for y := 0; y <= boardSizeY-1; y++ {
 			newBoard[x][y] = processCell(oldBoard, x, y)
 		}
     }
@@ -141,9 +141,9 @@ func cellAliveInt(board lifeBoard, x int, y int) int {
 func isCellOnBoard(x, y int) bool {
 	switch {
 	case x < 0: return false
-	case x > 2: return false
+	case x >= boardSizeX-1: return false
 	case y < 0: return false
-	case y > 2: return false
+	case y > boardSizeY-1: return false
 	default: 	return true
 	}
 }
