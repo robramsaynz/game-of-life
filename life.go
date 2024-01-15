@@ -152,6 +152,6 @@ func isCellAlive(board lifeBoard, x int, y int) bool{
     switch board[x][y] {
     case '@': return true
     case ' ': return false
-    default: log.Fatal("invalid switch arg: %c", board[x][y]) ; return false
+    default: log.Fatal("invalid switch arg: ", board[x][y]) ; return false
     }
 }
